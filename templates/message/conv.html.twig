@@ -1,0 +1,98 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Conversation{% endblock %}
+
+{% block body %} 
+<style>
+    .sms-container {
+        margin: 15px;
+        margin-left: 100px; /* Add left margin */
+        margin-right: 100px; /* Add right margin */
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        overflow: hidden;
+    }
+
+    .sms-header {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px;
+        text-align: center;
+    }
+
+    .sms-body {
+        padding: 15px;
+    }
+
+    .sms-sender, .sms-receiver {
+        clear: both;
+        color: #888;
+        font-size: 12px;
+    }
+
+    .sms-sender {
+        text-align: right;
+    }
+
+    .sms-receiver {
+        text-align: left;
+    }
+
+    .sms-form {
+        padding: 15px;
+        background-color: #f9f9f9;
+        border-top: 1px solid #ccc;
+    }
+
+    .sms-form form {
+        margin: 0;
+    }
+
+    .sms-form textarea {
+        width: calc(100% - 10px);
+        margin-bottom: 10px;
+        resize: none; /* Disable textarea resizing */
+    }
+
+    .sms-form button {
+        width: 100%;
+    }
+</style>
+
+<div class="sms-container">
+    <div class="sms-header">
+        <h1>Conversation</h1>
+    </div>
+    {% set all_messages = [] %}
+    {% for message in send_messages %}
+        {% set all_messages = all_messages|merge([{ 'content': message.content, 'user': message.user1, 'createdDate': message.createdDate, 'sent': true }]) %}
+    {% endfor %}
+    {% for message in received_messages %}
+        {% set all_messages = all_messages|merge([{ 'content': message.content, 'user': message.user1, 'createdDate': message.createdDate, 'sent': false }]) %}
+    {% endfor %}
+    {% set all_messages = all_messages|sort((a, b) => a.createdDate > b.createdDate) %}
+    {% for message in all_messages %}
+        <div class="sms-body">
+            {% if message.sent %}
+                <p style="float: right; text-align: right;">{{ message.content }}</p>
+                <div class="sms-sender">{{ message.user.nom }} - {{ message.createdDate ? message.createdDate|date('Y-m-d H:i:s') : '' }}</div>
+            {% else %}
+                <p style="float: left; text-align: left;">{{ message.content }}</p>
+                <div class="sms-receiver">{{ message.user.nom }} - {{ message.createdDate ? message.createdDate|date('Y-m-d H:i:s') : '' }}</div>
+            {% endif %}
+        </div>
+    {% else %}
+        <div class="sms-body">
+            <p>No records found</p>
+        </div>
+    {% endfor %}
+    <div class="sms-form">
+        {{ form_start(form, {'attr': {'class': 'form-inline'}}) }}
+            {{ form_widget(form['content'], {'attr': {'class': 'form-control', 'placeholder': 'Votre message'}}) }}
+            {{ form_row(form._token) }}
+            <button type="submit" class="btn btn-primary">Envoyer</button>
+        {{ form_end(form) }}
+    </div>
+</div>
+
+{% endblock %}

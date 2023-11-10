@@ -35,6 +35,9 @@ class Article
     #[ORM\ManyToMany(targetEntity: Theme::class, mappedBy: 'article')]
     private Collection $themes;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $file = null;
+
     public function __construct()
     {
         $this->commentaires = new ArrayCollection();
@@ -147,6 +150,18 @@ class Article
         if ($this->themes->removeElement($theme)) {
             $theme->removeArticle($this);
         }
+
+        return $this;
+    }
+
+    public function getFile(): ?string
+    {
+        return $this->file;
+    }
+
+    public function setFile(?string $file): static
+    {
+        $this->file = $file;
 
         return $this;
     }

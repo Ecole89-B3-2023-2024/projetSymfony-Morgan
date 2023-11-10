@@ -7,6 +7,7 @@ use App\Entity\Theme;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\FileType; 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Entity\User;
 
@@ -28,6 +29,10 @@ class ArticleType extends AbstractType
                 'label'         => 'Choisissez un ou plusieurs thèmes',
                 'multiple'      => true,
                 'expanded'      => true
+            ])
+            ->add('file', FileType::class, [
+                'label'         => 'Photo (png, jpeg)',
+                'data_class'    => null
             ])
         ;
     }

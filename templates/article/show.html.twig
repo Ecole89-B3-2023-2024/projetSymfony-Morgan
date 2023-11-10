@@ -23,6 +23,10 @@
                 <th>Date_publication</th>
                 <td>{{ article.datePublication ? article.datePublication|date('Y-m-d') : '' }}</td>
             </tr>
+            <tr>
+                <th>Média</th>
+                <td><img class="img-thumbnail" src="{{ asset('upload/articles/' ~ article.file) }}" alt="article"></td>
+            </tr>
         </tbody>
     </table>
 

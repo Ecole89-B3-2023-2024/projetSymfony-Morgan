@@ -13,6 +13,7 @@ use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/article')]
@@ -43,9 +44,22 @@ class ArticleController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $file = $form->get('file')->getData();
+            
+            $fileName = md5(uniqid()).'.'.$file->guessExtension(); 
+            
+            try {
+                $file->move(
+                    $this->getParameter('articles_directory'),
+                    $fileName
+                );
+            } catch (FileException $e) {
+                // ... handle exception if something happens during file upload
+            }
+            
+            $article->setFile($fileName);
             $entityManager->persist($article);
             $entityManager->flush();
-
             return $this->redirectToRoute('app_article_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -68,7 +82,7 @@ class ArticleController extends AbstractController
     {
         $form = $this->createForm(ArticleType::class, $article);
         $form->handleRequest($request);
-
+        
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 

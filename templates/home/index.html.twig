@@ -10,12 +10,12 @@
 
 <div class="example-wrapper">
     {% if app.user %}
-        <h1>Bonjour {{ app.user.nom }}</h1>
-        {% for article in articles %}
+        <h1>Bonjour {{ app.user.nom }} ({{ app.user.email }})</h1>
+        {# {% for article in articles %}
             <h2>{{article.titre}}</h2>
             <p>{{article.contenu}}</p>
             <p>écrit par {{article.auteur.nom}}</p>
-        {% endfor %}
+        {% endfor %} #}
     {% else %}
         <h1>Bonjour {{ controller_name }}, vous n'êtes pas connecté ! ✅</h1>
     {% endif %}
